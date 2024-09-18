@@ -20,11 +20,11 @@ function draw() {
   if (mountain){
     fill(100,80,120)
     stroke(80,80,80)
-    triangle(mouseX-800,windowHeight,mouseX-500,windowHeight,mouseX-650,380)
-    triangle(mouseX-700,windowHeight,mouseX-400,windowHeight,mouseX-550,350)
     triangle(mouseX-600,windowHeight,mouseX-300,windowHeight,mouseX-450,300)
+    triangle(mouseX-700,windowHeight,mouseX-400,windowHeight,mouseX-550,350)
     triangle(mouseX-500,windowHeight,mouseX-200,windowHeight,mouseX-350,400)
     triangle(mouseX-400,windowHeight,mouseX-100,windowHeight,mouseX-250,320)
+    triangle(mouseX-800,windowHeight,mouseX-500,windowHeight,mouseX-650,380)
     triangle(mouseX-300,windowHeight,mouseX,windowHeight,mouseX-150,340)
     triangle(mouseX-200,windowHeight,mouseX+100,windowHeight,mouseX-50,300)
     triangle(mouseX-100,windowHeight,mouseX+200,windowHeight,mouseX+50,300)
