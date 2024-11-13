@@ -1,0 +1,52 @@
+// Project Title
+// Your Name
+// Date
+//
+// Extra for Experts:
+// - describe what you did to take this project "above and beyond"
+let grid = [[0,   255, 255,  0,    0],
+            [255, 0,   255,  255,  0],
+            [0,   0,   150,  255,  0]];
+
+const NUM_ROWS = 3;
+const NUM_COLS = 5;
+
+let rectWidth, rectHeight;
+
+function renderGrid(){
+  for(let x = 0; x < NUM_COLS; x++){
+    for(let y = 0; y < NUM_ROWS; y++){
+      fill(grid[y][x]);
+      rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+    }
+  }
+}
+
+function mouseClicked(){
+  if (grid[getArrayY()][getArrayX()] === 255){
+    grid[getArrayY()][getArrayX()] = 0;
+  }
+  else {
+    grid[getArrayY()][getArrayX()] = 255;
+  }
+}
+
+function getArrayX(){
+  return int(mouseX/rectWidth);
+}
+
+function getArrayY(){
+  return int(mouseY/rectWidth);
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  rectWidth = 500/NUM_COLS;
+  rectHeight = 300/NUM_ROWS;
+}
+
+function draw() {
+  background(220);
+  renderGrid();
+  print(mouseX,rectWidth,int(mouseX/rectWidth));
+}
