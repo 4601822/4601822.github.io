@@ -6,15 +6,102 @@
 // - describe what you did to take this project "above and beyond"
 
 let tile = 10;
+let myPlayer;
 
 function setup() {
   createCanvas(500, 400);
   strokeWeight(0.5);
+  myPlayer = new player(0,0);
 }
 
 function draw() {
-  background(220);
+  background(110);
   grid();
+  move();
+  myPlayer.update();
+}
+
+function move(){
+  if (keyIsPressed){
+    //move right
+    if (keyIsDown(68)){// 68 = d
+      myPlayer.right();
+    }
+    //move left
+    if (keyIsDown(65)){// 65 is a
+      myPlayer.left();
+    }
+    //move down
+    if (keyIsDown(83)){//83 is s
+      myPlayer.down();
+    }
+    //move up
+    if (keyIsDown(87)){//87 is w
+      myPlayer.up();
+    }
+  }
+}
+// dashes
+function keyPressed(){
+  if (keyCode === SHIFT){
+    if (keyIsDown(68)){
+      myPlayer.dashRight();
+    }
+    if (keyIsDown(65)){
+      myPlayer.dashLeft();
+    }
+  }
+}
+
+class player{
+  constructor(x,y){
+    this.x = x;
+    this.y = y;
+    this.tile = tile;
+    this.speed = 2;
+  }
+
+  update(){
+    fill(210,70,210);
+    rect(this.x,this.y,this.tile,this.tile);
+  }
+
+  right(){
+    if (this.x < 490){
+      this.x += this.speed;
+    }
+  }
+
+  dashRight(){
+    if (this.x < 470){
+      this.x += this.speed*10;
+    }
+
+  }
+
+  left(){
+    if (this.x > 0){
+      this.x -= this.speed;
+    }
+  }
+
+  dashLeft(){
+    if (this.x > 20){
+      this.x =+ this.speed*10;
+    }
+  }
+
+  down(){
+    if (this.y < 390){
+      this.y += this.speed;
+    }
+  }
+
+  up(){
+    if (this.y > 0){
+      this.y -= this.speed;
+    }
+  }
 }
 
 function grid(){
