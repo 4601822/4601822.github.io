@@ -7,6 +7,9 @@
 
 let tile = 10;
 let myPlayer;
+let xPos;
+let yPos;
+let walls = [];
 
 function setup() {
   createCanvas(500, 400);
@@ -17,8 +20,16 @@ function setup() {
 function draw() {
   background(110);
   grid();
+  border();
   move();
+  xPos = myPlayer.findX();
+  yPos = myPlayer.findY();
   myPlayer.update();
+  wall.check();
+}
+
+function buildWall(x1,y1,x2,y2){
+  for (i = )
 }
 
 function move(){
@@ -50,6 +61,25 @@ function keyPressed(){
     if (keyIsDown(65)){
       myPlayer.dashLeft();
     }
+    if (keyIsDown(83)){
+      myPlayer.dashDown();
+    }
+    if (keyIsDown(87)){
+      myPlayer.dashUp();
+    }
+  }
+}
+
+class block{
+  constructor(x,y){
+    this.x = x;
+    this.y = y;
+    this.tile = tile;
+  }
+
+  check(){
+    fill(255);
+    rect(this.x,this.y,this.tile);
   }
 }
 
@@ -60,12 +90,12 @@ class player{
     this.tile = tile;
     this.speed = 2;
   }
-
+  // always run update
   update(){
     fill(210,70,210);
     rect(this.x,this.y,this.tile,this.tile);
   }
-
+  //movement binds
   right(){
     if (this.x < 490){
       this.x += this.speed;
@@ -87,7 +117,7 @@ class player{
 
   dashLeft(){
     if (this.x > 20){
-      this.x =+ this.speed*10;
+      this.x -= this.speed*10;
     }
   }
 
@@ -97,10 +127,31 @@ class player{
     }
   }
 
+  dashDown(){
+    if (this.y < 370){
+      this.y += this.speed*10;
+    }
+  }
+
   up(){
     if (this.y > 0){
       this.y -= this.speed;
     }
+  }
+
+  dashUp(){
+    if (this.y > 20){
+      this.y -= this.speed*10;
+    }
+  }
+
+  // find values
+  findX(){
+    return this.x;
+  }
+
+  findY(){
+    return this.y;
   }
 }
 
