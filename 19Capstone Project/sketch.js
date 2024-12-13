@@ -41,16 +41,24 @@ let mapData = [
 function renderGrid(){
   for(let x = 0; x < numCols; x++){
     for(let y = 0; y < numRows; y++){
+      // empty tile
       if (mapData[y][x] === 0){
         fill(70,70,90);
         rect(x*tile, y*tile, tile, tile);
       }
+      // obstacle tile
       if (mapData[y][x] === 1){
         fill(255);
         rect(x*tile, y*tile, tile, tile);
       }
+      // death tile
       if (mapData[y][x] === 2){
         fill(255,0,0);
+        rect(x*tile, y*tile, tile, tile);
+      }
+      // loading lazer
+      if (mapData[y][x] === 3){
+        fill(140,50,70);
         rect(x*tile, y*tile, tile, tile);
       }
     }
@@ -63,37 +71,73 @@ let xPos;
 let yPos;
 const numCols = 30;
 const numRows = 30;
+let lazerDelay = 1000;
+let lazerDuration = 2000;
+let gameState = 10;
 
 function setup() {
   createCanvas(300, 300);
   strokeWeight(0.5);
   myPlayer = new player(25,25);
+  // timed Changes
 }
 
 function draw(){
-  renderGrid();
-  border();
-  grid();
-  xPos = myPlayer.findX();
-  yPos = myPlayer.findY();
-  move();
-  lazerH(3);
-  myPlayer.update();
-  print(xPos,yPos);
+  // game start
+  if (gameState === 10){
+    renderGrid();
+    border();
+    grid();
+    xPos = myPlayer.findX();
+    yPos = myPlayer.findY();
+    move();
+    myPlayer.update();
+    print(xPos,yPos);
+  }
+
+  // loss screen
+  if (gameState === 0){
+    fill(100,0,0);
+    rect(0,0,width,height);
+    fill(255,222,89);
+    textAlign(CENTER);
+    textSize(40);
+    text("YOU LOSE",width/2,100);
+    textSize(20);
+    text("press F5 to try again", width/2, 200);
+  }
 }
 
 function lazerH(y){
-  fill(255,0,0);
-  stroke(255,0,0);
-  strokeWeight(1);
-  line(0,round(y*tile)+5,300,round(y*tile)+5);
-  stroke(0);
-  strokeWeight(0.5);
+  for (let z = 1; z < 29; z++){
+    mapData[round(y)][z] = 3;
+  }
   setTimeout(() => {
-    for (let z = 0; z < 30; z ++){
+    for (let z = 1; z < 29; z ++){
       mapData[round(y)][z] = 2;
     }
-  }, 2000);
+  }, lazerDelay);
+  setTimeout(() => {
+    for (let z = 1; z < 29; z ++){
+      mapData[round(y)][z] = 0;
+    }
+  }, lazerDuration);
+}
+
+function lazerV(x){
+  for (let z = 1; z < 29; z++){
+    mapData[z][round(x)] = 3;
+  }
+  setTimeout(() => {
+    for (let z = 1; z < 29; z ++){
+      mapData[z][round(x)] = 2;
+    }
+  }, lazerDelay);
+  setTimeout(() => {
+    for (let z = 1; z < 29; z ++){
+      mapData[z][round(x)] = 0;
+    }
+  }, lazerDuration);
 }
 
 function border(){
@@ -169,7 +213,7 @@ class player{
     fill(210,70,210);
     circle(this.x+4,this.y+4,tile);
     if (mapData[yPos][xPos] === 2){
-      this.x = 30; this.y = 30;
+      gameState = 0;
     }
   }
   //movement binds
