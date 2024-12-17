@@ -74,9 +74,19 @@ const numRows = 30;
 let lazerDelay = 1000;
 let lazerDuration = 2000;
 let gameState = 10;
+let energy = 10;
 
 function setup() {
-  createCanvas(300, 300);
+  createCanvas(300, 330);
+  // skill bar
+  fill(0);
+  rect(0,300,width,30);
+  // energy
+  fill(210, 70, 210);
+  textAlign(LEFT);
+  textSize(15);
+  text("energy|", 10, 318);
+  //player setup
   strokeWeight(0.5);
   myPlayer = new player(25,25);
   // timed Changes
@@ -92,7 +102,18 @@ function draw(){
     yPos = myPlayer.findY();
     move();
     myPlayer.update();
-    print(xPos,yPos);
+    
+    //energy visualizer
+    fill(0);
+    rect(60,307,150,20);
+    fill(210,70,210);
+    for (let i = 0; i < energy; i++){
+      // if (i <= energy){
+      fill(210,70,210);
+      rect(60+i*15,307,13,13);
+    }
+
+    print(guard);
   }
 
   // loss screen
@@ -184,6 +205,10 @@ function keyPressed(){
     if (keyIsDown(87)){
       myPlayer.dashUp();
     }
+    energy-=2;
+  }
+  if (keyCode === 32){// 32 === spacebar
+    myPlayer.guard();
   }
 }
 
@@ -207,13 +232,18 @@ class player{
     this.tile = tile;
     this.speed = 3;
     this.dash = 25;
+    this.stroke = 0;
+    this.guard = false;
   }
   // always run update
   update(){
+    stroke(this.stroke);
     fill(210,70,210);
     circle(this.x+4,this.y+4,tile);
-    if (mapData[yPos][xPos] === 2){
-      gameState = 0;
+    if (this.guard === false){
+      if (mapData[yPos][xPos] === 2){
+        gameState = 0;
+      }
     }
   }
   //movement binds
@@ -227,8 +257,10 @@ class player{
 
   dashRight(){
     if (this.x < 270){
-      if (mapData[yPos][xPos+3] !== 1){
-        this.x += this.dash;
+      if (energy >= 2){
+        if (mapData[yPos][xPos+3] !== 1){
+          this.x += this.dash;
+        }
       }
     }
 
@@ -244,8 +276,10 @@ class player{
 
   dashLeft(){
     if (this.x > 20){
-      if (mapData[yPos][xPos-3] !== 1){
-        this.x -= this.dash;
+      if (energy >= 2){
+        if (mapData[yPos][xPos-3] !== 1){
+          this.x -= this.dash;
+        }
       }
     }
   }
@@ -260,8 +294,10 @@ class player{
 
   dashDown(){
     if (this.y < 270){
-      if (mapData[yPos+3][xPos] !== 1){
-        this.y += this.speed*10;
+      if (energy >= 2){
+        if (mapData[yPos+3][xPos] !== 1){
+          this.y += this.speed*10;
+        }
       }
     }
   }
@@ -276,9 +312,17 @@ class player{
 
   dashUp(){
     if (this.y > 20){
-      if (mapData[yPos-3][xPos-1] !== 1){
-        this.y -= this.speed*10;
+      if (energy >= 2){
+        if (mapData[yPos-3][xPos-1] !== 1){
+          this.y -= this.speed*10;
+        }
       }
+    }
+  }
+
+  guard(){
+    if (energy >= 1){
+      this.guard = true;
     }
   }
 
@@ -295,10 +339,10 @@ class player{
 function grid(){
   //vertical
   for(let i = 0; i < width; i += tile){
-    line(i,0,i,height);
+    line(i,0,i,300);
   }
   //horizontal
-  for(let i = 0; i < height; i += tile){
+  for(let i = 0; i < 300; i += tile){
     line(0,i,width,i);
   }
 }
