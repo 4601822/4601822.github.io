@@ -42,6 +42,7 @@ function renderGrid(){
   for(let x = 0; x < numCols; x++){
     for(let y = 0; y < numRows; y++){
       // empty tile
+      stroke(0);
       if (mapData[y][x] === 0){
         fill(70,70,90);
         rect(x*tile, y*tile, tile, tile);
@@ -75,9 +76,17 @@ let lazerDelay = 1000;
 let lazerDuration = 2000;
 let gameState = 10;
 let energy = 10;
+let guard = false;
+let spaceTimer;
 
 function setup() {
+  setInterval(() => {
+    if (energy < 10 && !keyIsDown(32)){
+      energy += 1;
+    }
+  }, 1000);
   createCanvas(300, 330);
+  spaceTimer = millis();
   // skill bar
   fill(0);
   rect(0,300,width,30);
@@ -94,6 +103,19 @@ function setup() {
 
 function draw(){
   // game start
+  if (keyIsDown(32) === true){
+    if (energy >= 1){
+      guard = true;
+      if (millis() - spaceTimer > 500){
+        spaceTimer = millis();
+        energy -= 1;
+      }
+    }
+  }
+  else {
+    guard = false;
+    spaceTimer = millis();
+  }
   if (gameState === 10){
     renderGrid();
     border();
@@ -105,16 +127,16 @@ function draw(){
     
     //energy visualizer
     fill(0);
-    rect(60,307,150,20);
+    stroke(0);
+    rect(60,307,180,20);
     fill(210,70,210);
     for (let i = 0; i < energy; i++){
       // if (i <= energy){
       fill(210,70,210);
       rect(60+i*15,307,13,13);
     }
-
-    print(guard);
   }
+  print('energy',energy);
 
   // loss screen
   if (gameState === 0){
@@ -207,22 +229,6 @@ function keyPressed(){
     }
     energy-=2;
   }
-  if (keyCode === 32){// 32 === spacebar
-    myPlayer.guard();
-  }
-}
-
-class block{
-  constructor(x,y){
-    this.x = x;
-    this.y = y;
-    this.tile = tile;
-  }
-
-  check(){
-    fill(255);
-    rect(this.x,this.y,this.tile);
-  }
 }
 
 class player{
@@ -233,14 +239,16 @@ class player{
     this.speed = 3;
     this.dash = 25;
     this.stroke = 0;
-    this.guard = false;
   }
   // always run update
   update(){
     stroke(this.stroke);
+    if (guard === true){
+      stroke(225);
+    }
     fill(210,70,210);
     circle(this.x+4,this.y+4,tile);
-    if (this.guard === false){
+    if (guard === false){
       if (mapData[yPos][xPos] === 2){
         gameState = 0;
       }
@@ -248,9 +256,11 @@ class player{
   }
   //movement binds
   right(){
-    if (this.x < 490){
-      if(mapData[yPos][xPos+1] !== 1){
-        this.x += this.speed;
+    if (guard === false){
+      if (this.x < 490){
+        if(mapData[yPos][xPos+1] !== 1){
+          this.x += this.speed;
+        }
       }
     }
   }
@@ -267,9 +277,11 @@ class player{
   }
 
   left(){
-    if (this.x > 0){
-      if (mapData[yPos][xPos-1] !== 1){
-        this.x -= this.speed;
+    if (guard === false){
+      if (this.x > 0){
+        if (mapData[yPos][xPos-1] !== 1){
+          this.x -= this.speed;
+        }
       }
     }
   }
@@ -285,9 +297,11 @@ class player{
   }
 
   down(){
-    if (this.y < 300){
-      if (mapData[yPos+1][xPos] !== 1){
-        this.y += this.speed;
+    if (guard === false){
+      if (this.y < 300){
+        if (mapData[yPos+1][xPos] !== 1){
+          this.y += this.speed;
+        }
       }
     }
   }
@@ -303,9 +317,11 @@ class player{
   }
 
   up(){
-    if (this.y > 0){
-      if (mapData[yPos-1][xPos] !== 1){
-        this.y -= this.speed;
+    if (guard === false){
+      if (this.y > 0){
+        if (mapData[yPos-1][xPos] !== 1){
+          this.y -= this.speed;
+        }
       }
     }
   }
@@ -317,12 +333,6 @@ class player{
           this.y -= this.speed*10;
         }
       }
-    }
-  }
-
-  guard(){
-    if (energy >= 1){
-      this.guard = true;
     }
   }
 
