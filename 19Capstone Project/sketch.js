@@ -99,6 +99,7 @@ function setup() {
   strokeWeight(0.5);
   myPlayer = new player(25,25);
   // timed Changes
+  firstBullet = new bulletR(10,500);
 }
 
 function draw(){
@@ -136,6 +137,7 @@ function draw(){
       rect(60+i*15,307,13,13);
     }
   }
+  firstBullet.move();
   print('energy',energy);
 
   // loss screen
@@ -230,6 +232,25 @@ function keyPressed(){
     energy-=2;
   }
 }
+
+class bulletR{
+  constructor(y,speed){
+    this.y = y;
+    this.x = 0;
+    this.bulletTime = 0;
+    this.speed = speed;
+  }
+  move(){
+    if (millis() - this.bulletTime > this.speed){
+      mapData[this.y][this.x] = 3;
+      mapData[this.y][this.x - 2] = 2;
+      mapData[this.y][this.x - 3] = 0;
+      this.x += 1;
+    }
+  }
+}
+
+
 
 class player{
   constructor(x,y){
