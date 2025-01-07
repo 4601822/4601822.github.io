@@ -3,11 +3,11 @@
 // Date
 //
 
-//map is 40x50
+//map is 30x30
 let mapData = [
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -74,10 +74,11 @@ const numCols = 30;
 const numRows = 30;
 let lazerDelay = 1000;
 let lazerDuration = 2000;
-let gameState = 10;
+let gameState = 1.0;
 let energy = 10;
 let guard = false;
 let spaceTimer;
+let bullets = [];
 
 function setup() {
   setInterval(() => {
@@ -99,7 +100,9 @@ function setup() {
   strokeWeight(0.5);
   myPlayer = new player(25,25);
   // timed Changes
-  firstBullet = new bulletR(10,500);
+bullets.push(new bulletR(10,100));
+bullets.push(new bulletL(11,100));
+bullets.push(new bulletU(10,100));
 }
 
 function draw(){
@@ -117,7 +120,7 @@ function draw(){
     guard = false;
     spaceTimer = millis();
   }
-  if (gameState === 10){
+  if (gameState === 1.0){
     renderGrid();
     border();
     grid();
@@ -137,7 +140,13 @@ function draw(){
       rect(60+i*15,307,13,13);
     }
   }
-  firstBullet.move();
+  for(let i = 0; i < bullets.length; i++){
+    let b = bullets[i];
+    b.move();
+    if (b.alive === false){
+      bullets.splice(i,1);
+    }
+  }
   print('energy',energy);
 
   // loss screen
@@ -239,6 +248,7 @@ class bulletR{
     this.x = 0;
     this.bulletTime = 0;
     this.speed = speed;
+    this.alive = true
   }
   move(){
     if (millis() - this.bulletTime > this.speed){
@@ -246,6 +256,58 @@ class bulletR{
       mapData[this.y][this.x - 2] = 2;
       mapData[this.y][this.x - 3] = 0;
       this.x += 1;
+      this.bulletTime = millis();
+    }
+    if (this.x > 29){
+      this.alive = false;
+      mapData[this.y][this.x - 2] = 0;
+      mapData[this.y][this.x - 3] = 0;
+    }
+  }
+}
+
+
+class bulletL{
+  constructor(y,speed){
+    this.y = y;
+    this.x = 29;
+    this.bulletTime = 0;
+    this.speed = speed;   
+    this.alive = true; 
+  }
+  move(){
+    if (millis() - this.bulletTime > this.speed){
+      mapData[this.y][this.x] = 3;
+      mapData[this.y][this.x + 2] = 2;
+      mapData[this.y][this.x + 3] = 0;
+      this.x -= 1;
+      this.bulletTime = millis();
+    }
+    if (this.x < 0){
+      this.alive = false;
+      mapData[this.y][this.x + 3] = 0;
+      mapData[this.y][this.x + 2] = 0;
+    }
+  }
+}
+
+class bulletU{
+  constructor(x,speed){
+    this.x = x;
+    this.y = 29;
+    this.bulletTime = 0;
+    this.speed = speed;
+  }
+  move(){
+    if (millis() - this.bulletTime > this.speed){
+      mapData[this.y][this.x] = 3;
+      if (this.y + 2 < mapData.length){
+        mapData[this.y + 2][this.x] = 2;};
+      if (this.y + 3 < mapData.length){
+        mapData[this.y + 3][this.x] = 0;}
+
+      this.y -= 1;
+      this.bulletTime = millis();
     }
   }
 }
