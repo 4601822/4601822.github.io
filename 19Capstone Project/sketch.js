@@ -81,7 +81,7 @@ let spaceTimer;
 let bullets = [];
 
 function setup() {
-  frameRate(5);
+  // frameRate(5);
   setInterval(() => {
     if (energy < 10 && !keyIsDown(32)){
       energy += 1;
@@ -104,7 +104,7 @@ function setup() {
   bullets.push(new bulletD(11,100));
   bullets.push(new bulletR(10,100));
   bullets.push(new bulletL(11,100));
-  bullets.push(new bulletU(10,100));
+  bullets.push(new bulletU(25,100));
 }
 
 function draw(){
@@ -258,7 +258,8 @@ class bulletR{
       mapData[this.y][this.x - 2] = 2;
       mapData[this.y][this.x - 3] = 0;
       if (this.edge === 0){
-        this.x += 1};
+        this.x += 1;
+      }
       if (this.x === 31 && this.edge === 0){
         this.edge = 1;
       }
@@ -298,11 +299,14 @@ class bulletL{
     if (millis() - this.bulletTime > this.speed){
       mapData[this.y][this.x] = 3;
       if (this.x + 2 < mapData.length && this.edge === 0){
-        mapData[this.y][this.x + 2] = 2};
+        mapData[this.y][this.x + 2] = 2;
+      }
       if (this.x + 3 < mapData.length && this.edge === 0){
-        mapData[this.y][this.x + 3] = 0};
+        mapData[this.y][this.x + 3] = 0;
+      }
       if (this.edge === 0){
-        this.x -= 1};
+        this.x -= 1;
+      }
       if (this.x === 0 && this.edge === 0){
         this.edge = 1;
       }
@@ -342,15 +346,16 @@ class bulletU{
     if (millis() - this.bulletTime > this.speed){
       mapData[this.y][this.x] = 3;
       if (this.y + 2 < mapData.length && this.edge === 0){
-        mapData[this.y + 2][this.x] = 2;};
+        mapData[this.y + 2][this.x] = 2;
+      }
       if (this.y + 3 < mapData.length && this.edge === 0){
-        mapData[this.y + 3][this.x] = 0;}
+        mapData[this.y + 3][this.x] = 0;
+      }
       if (this.edge === 0){
         this.y -= 1;
       }
       if (this.y === 0 && this.edge === 0){
-        this.edge = 1;
-        
+        this.edge = 1;  
       }
       else if (this.edge === 1){
         mapData[this.y][this.x] = 3;
@@ -387,16 +392,15 @@ class bulletD{
   move(){
     if (millis() - this.bulletTime > this.speed){
       mapData[this.y][this.x] = 3;
-      if (this.y - 2 < mapData.length && this.edge === 0){
-        mapData[this.y - 2][this.x] = 2;};
-      if (this.y - 3 < mapData.length && this.edge === 0){
-        mapData[this.y - 3][this.x] = 0;}
+      if (this.y >= 2 && this.edge === 0){mapData[this.y - 2][this.x] = 2;
+      }
+      if (this.y >= 3 && this.edge === 0){mapData[this.y - 3][this.x] = 0;
+      }
       if (this.edge === 0){
         this.y += 1;
       }
       if (this.y === 30 && this.edge === 0){
         this.edge = 1;
-        
       }
       else if (this.edge === 1){
         mapData[this.y][this.x] = 3;
@@ -418,8 +422,11 @@ class bulletD{
       }
       this.bulletTime = millis();
     }
-  }
+  }    
 }
+
+
+
 
 
 
